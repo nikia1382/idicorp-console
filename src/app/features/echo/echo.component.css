@@ -1,0 +1,215 @@
+:host {
+  display: block;
+  direction: rtl;
+  font-family: var(--font-family);
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+h1 {
+  margin: 0;
+  font-size: var(--text-h1);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.muted {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-label);
+  color: var(--color-text-muted);
+}
+
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-label);
+  color: var(--color-text-muted);
+}
+
+.status-line::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border-hover);
+}
+
+.status-line[data-state='ready']::before {
+  background: var(--color-primary);
+}
+
+.status-line[data-state='connecting']::before {
+  background: var(--color-focus);
+}
+
+.status-line[data-state='closed']::before {
+  background: var(--color-error);
+}
+
+.composer {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.composer input {
+  flex: 1;
+  min-width: 0;
+  height: var(--control-height);
+  padding: 0 var(--space-4);
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-field);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+}
+
+.composer input:hover {
+  border-color: var(--color-border-hover);
+}
+
+.composer input:focus {
+  outline: none;
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 3px rgba(154, 123, 74, 0.18);
+}
+
+.btn-primary {
+  height: var(--control-height);
+  padding: 0 var(--space-6);
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.btn-ghost {
+  height: 36px;
+  padding: 0 var(--space-4);
+  font-family: inherit;
+  font-size: var(--text-label);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-border-hover);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.form-error {
+  margin: 0;
+  padding: var(--space-3);
+  font-size: var(--text-label);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-control);
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 200px;
+}
+
+.empty {
+  text-align: center;
+  padding: var(--space-8) 0;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  overflow-wrap: anywhere;
+}
+
+.bubble.sent {
+  align-self: flex-start;
+  background: var(--color-field);
+}
+
+.bubble.received {
+  align-self: flex-end;
+}
+
+.who {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+}
+
+.bubble p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

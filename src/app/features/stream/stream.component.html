@@ -1,0 +1,43 @@
+<main class="page">
+  <header class="topbar">
+    <div>
+      <h1>پژواک استریمی</h1>
+      <p class="muted">پاسخ سرور به‌صورت تکه‌تکه نمایش داده می‌شود.</p>
+    </div>
+    <a routerLink="/tasks" class="btn-ghost link">بازگشت</a>
+  </header>
+
+  <form class="composer" (ngSubmit)="start()" novalidate>
+    <label for="stream-input">متن</label>
+    <textarea
+      id="stream-input"
+      [formControl]="input"
+      dir="auto"
+      rows="3"
+      placeholder="متنی برای ارسال بنویسید"
+      [attr.aria-invalid]="!!validationError()"
+    ></textarea>
+
+    <div class="actions">
+      <button type="submit" class="btn-primary" [disabled]="running()">
+        {{ running() ? 'در حال دریافت...' : 'ارسال' }}
+      </button>
+      @if (running()) {
+        <button type="button" class="btn-ghost" (click)="cancel()">لغو</button>
+      }
+    </div>
+  </form>
+
+  @if (validationError() || error()) {
+    <p class="form-error" role="alert">{{ validationError() ?? error() }}</p>
+  }
+
+  <section class="result" aria-live="polite" aria-label="پاسخ سرور">
+    <span class="muted">پاسخ</span>
+    @if (output()) {
+      <p dir="auto">{{ output() }}</p>
+    } @else if (!running()) {
+      <p class="muted">هنوز پاسخی دریافت نشده است.</p>
+    }
+  </section>
+</main>

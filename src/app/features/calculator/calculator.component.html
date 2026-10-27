@@ -1,0 +1,63 @@
+<main class="page">
+  <header class="topbar">
+    <div>
+      <h1>ماشین‌حساب</h1>
+      <p class="muted">محاسبه از طریق اتصال WebSocket</p>
+    </div>
+    <a routerLink="/tasks" class="btn-ghost link">بازگشت به تسک‌ها</a>
+  </header>
+
+  <p class="status-line" role="status" [attr.data-state]="ws.status()">
+    @switch (ws.status()) {
+      @case ('connecting') { در حال اتصال... }
+      @case ('ready') { متصل است }
+      @case ('closed') { اتصال قطع شده است }
+      @default { آماده }
+    }
+  </p>
+
+  @if (ws.status() === 'closed') {
+    <button type="button" class="btn-ghost" (click)="reconnect()">اتصال مجدد</button>
+  }
+
+  <form class="calc-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label for="operation">عملیات</label>
+      <select id="operation" formControlName="operation">
+        @for (op of operations; track op.value) {
+          <option [value]="op.value">{{ op.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="numbers">اعداد</label>
+      <input
+        id="numbers"
+        type="text"
+        formControlName="numbers"
+        dir="ltr"
+        inputmode="decimal"
+        autocomplete="off"
+        placeholder="مثلاً 10, 20, 30"
+        aria-describedby="numbers-hint"
+      />
+      <p class="hint-text" id="numbers-hint">
+        با ویرگول جدا کنید. حداکثر ۱۰۰ عدد، و هر عدد تا ۱ تریلیون.
+      </p>
+    </div>
+
+    @if (validationError() || ws.error()) {
+      <p class="form-error" role="alert">{{ validationError() ?? ws.error() }}</p>
+    }
+
+    <button type="submit" class="btn-primary" [disabled]="!ready()">محاسبه</button>
+  </form>
+
+  @if (ws.result() !== null) {
+    <section class="result" aria-live="polite">
+      <span class="muted">نتیجه</span>
+      <strong dir="ltr">{{ ws.result() }}</strong>
+    </section>
+  }
+</main>

@@ -1,0 +1,192 @@
+<main class="page">
+  <header class="topbar">
+    <div>
+      <h1>تسک‌ها</h1>
+      <p class="muted">تسک‌های نشست فعلی شما</p>
+    </div>
+    <div class="topbar-actions">
+      <button type="button" class="btn-primary" (click)="openCreate()">تسک جدید +</button>
+      <button type="button" class="btn-ghost" (click)="auth.logout()">خروج</button>
+    </div>
+  </header>
+
+  <section class="toolbar" aria-label="جستجو و فیلتر">
+    <div class="search">
+      <label for="search" class="sr-only">جستجو در عنوان و توضیحات</label>
+      <input
+        id="search"
+        type="search"
+        [formControl]="search"
+        placeholder="جستجو در تسک‌ها"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="filters" role="group" aria-label="فیلتر وضعیت">
+      @for (option of filterOptions; track option.value) {
+        <button
+          type="button"
+          class="chip"
+          [class.active]="filter() === option.value"
+          [attr.aria-pressed]="filter() === option.value"
+          (click)="setFilter(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  </section>
+
+  @if (actionError()) {
+    <div class="state error" role="alert">
+      <span>{{ actionError() }}</span>
+      <button type="button" class="btn-ghost" (click)="actionError.set(null)">بستن</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="state" role="status">در حال بارگذاری...</p>
+  } @else if (error()) {
+    <div class="state error" role="alert">
+      <span>{{ error() }}</span>
+      <button type="button" class="btn-ghost" (click)="retry()">تلاش دوباره</button>
+    </div>
+  } @else if (tasks().length === 0) {
+    <div class="state">
+      <p>تسکی با این شرایط پیدا نشد.</p>
+    </div>
+  } @else {
+    <ul class="task-list">
+      @for (task of tasks(); track task.id) {
+        <li class="task" [class.done]="task.completed">
+          <button
+            type="button"
+            class="status"
+            (click)="toggle(task)"
+            [attr.aria-pressed]="task.completed"
+            [attr.aria-label]="
+              task.completed ? 'علامت‌زدن به‌عنوان در انتظار' : 'علامت‌زدن به‌عنوان انجام‌شده'
+            "
+          >
+            {{ task.completed ? '✓' : '○' }}
+          </button>
+
+          <div class="task-body">
+            <h2 dir="auto">{{ task.title }}</h2>
+            @if (task.description) {
+              <p class="muted" dir="auto">{{ task.description }}</p>
+            }
+            <small class="muted">
+              به‌روزرسانی: {{ task.updated_at | date: 'yyyy/MM/dd HH:mm' }}
+            </small>
+          </div>
+
+          <div class="task-actions">
+            <button type="button" class="btn-ghost small" (click)="openEdit(task)">ویرایش</button>
+            <button type="button" class="btn-danger small" (click)="askDelete(task)">حذف</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</main>
+
+<!-- دیالوگ ایجاد و ویرایش -->
+@if (dialogOpen()) {
+  <div class="overlay" (click)="closeDialog()">
+    <section
+      class="dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="dialog-title">{{ editingId() === null ? 'تسک جدید' : 'ویرایش تسک' }}</h2>
+
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <div class="field" [class.invalid]="form.controls.title.touched && form.controls.title.invalid">
+          <label for="task-title">عنوان</label>
+          <input
+            id="task-title"
+            type="text"
+            formControlName="title"
+            dir="auto"
+            maxlength="120"
+            autocomplete="off"
+            autofocus
+            [attr.aria-invalid]="form.controls.title.touched && form.controls.title.invalid"
+            aria-describedby="title-help"
+          />
+          <div class="field-meta">
+            @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+              <p class="field-error" id="title-help">عنوان الزامی است.</p>
+            } @else {
+              <span id="title-help" class="counter"></span>
+            }
+            <span class="counter">{{ form.controls.title.value.length }}/120</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="task-description">توضیحات <span class="optional">(اختیاری)</span></label>
+          <textarea
+            id="task-description"
+            formControlName="description"
+            dir="auto"
+            rows="4"
+            maxlength="2000"
+          ></textarea>
+          <div class="field-meta">
+            <span></span>
+            <span class="counter">{{ form.controls.description.value.length }}/2000</span>
+          </div>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" formControlName="completed" />
+          <span>انجام‌شده</span>
+        </label>
+
+        @if (formError()) {
+          <p class="form-error" role="alert">{{ formError() }}</p>
+        }
+
+        <div class="dialog-actions">
+          <button type="submit" class="btn-primary" [disabled]="saving()">
+            {{ saving() ? 'در حال ذخیره...' : 'ذخیره' }}
+          </button>
+          <button type="button" class="btn-ghost" (click)="closeDialog()" [disabled]="saving()">
+            انصراف
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+
+<!-- تأیید حذف -->
+@if (pendingDelete(); as target) {
+  <div class="overlay" (click)="cancelDelete()">
+    <section
+      class="dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-title"
+      aria-describedby="delete-desc"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="delete-title">حذف تسک</h2>
+      <p id="delete-desc" class="muted" dir="auto">
+        «{{ target.title }}» حذف شود؟ این کار قابل بازگشت نیست.
+      </p>
+      <div class="dialog-actions">
+        <button type="button" class="btn-danger" (click)="confirmDelete()" [disabled]="deleting()">
+          {{ deleting() ? 'در حال حذف...' : 'بله، حذف شود' }}
+        </button>
+        <button type="button" class="btn-ghost" (click)="cancelDelete()" [disabled]="deleting()">
+          انصراف
+        </button>
+      </div>
+    </section>
+  </div>
+}

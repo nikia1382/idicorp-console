@@ -1,0 +1,44 @@
+:root {
+  --color-bg: #f3ede3;
+  --color-surface: #faf7f1;
+  --color-field: #f0e9dc;
+  --color-border: #d8ccb8;
+  --color-border-hover: #b7a68d;
+
+  --color-text: #2b2520;
+  --color-text-muted: #6f6355;
+  --color-placeholder: #8f8374;
+
+  --color-primary: #3a322a;
+  --color-primary-hover: #2a241e;
+  --color-on-primary: #faf7f1;
+
+  --color-focus: #9a7b4a;
+
+  --color-error: #a33a2f;
+  --color-error-bg: #f7e5e0;
+  --color-error-border: #e2b5ac;
+
+  --font-family: 'Vazirmatn', Tahoma, sans-serif;
+  --text-h1: 1.5rem;
+  --text-base: 1rem;
+  --text-label: 0.875rem;
+  --text-small: 0.75rem;
+
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-card: 14px;
+  --radius-control: 10px;
+  --control-height: 44px;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--color-bg);
+  font-family: var(--font-family);
+}

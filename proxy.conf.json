@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://ts.idicorp.ir",
+    "secure": true,
+    "changeOrigin": true,
+    "cookieDomainRewrite": "localhost"
+  }
+}
