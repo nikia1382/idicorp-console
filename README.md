@@ -1,59 +1,88 @@
-# IdicorpConsole
+# IDICorp Service Console
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+کنسول داخلی تسک‌ها و سرویس‌ها، ساخته‌شده با Angular 19 و CSS خام.
 
-## Development server
+## امکانات
 
-To start a local development server, run:
+- ورود با CAPTCHA و محافظ مسیر
+- تسک‌ها: فهرست، جستجو، فیلتر وضعیت، ایجاد، ویرایش، تغییر وضعیت و حذف با تأیید
+- ماشین‌حساب از طریق WebSocket با احراز هویت توکن
+- پژواک متن از طریق WebSocket
+- پژواک استریمی با نمایش تکه‌تکه‌ی پاسخ
 
-```bash
-ng serve
-```
+## نسخه‌های لازم
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+| ابزار | نسخه |
+|---|---|
+| Node.js | 20 یا 22 (LTS) |
+| npm | 10 یا بالاتر |
+| Angular | 19.x |
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## نصب
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+## اجرا
 
 ```bash
-ng build
+npm start -- --proxy-config proxy.conf.json
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+سپس به `http://localhost:4200` برو.
 
-## Running unit tests
+> `--proxy-config proxy.conf.json` الزامی است. این فایل درخواست‌های `/api` را به سرور API هدایت می‌کند.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## ورود به محیط آزمایشی
+
+- نام کاربری: `admin`
+- رمز عبور: `admin`
+- کد امنیتی: پاسخ ریاضی داخل تصویر را وارد کن.
+
+## تنظیمات محیط
+
+فایل `.env.example` مستندات آدرس‌های سرویس را دارد:
+
+| متغیر | توضیح |
+|---|---|
+| `API_BASE_URL` | آدرس پایه‌ی API. در توسعه خالی بماند تا از proxy استفاده شود. |
+| `CALCULATOR_WS_URL` | آدرس WebSocket ماشین‌حساب |
+| `ECHO_WS_URL` | آدرس WebSocket پژواک متن |
+
+> آدرس‌های واقعی در `src/environments/environment.ts` هستند. اگر آدرس سرویس عوض شد، آن فایل را به‌روز کن.
+
+## ساخت نسخه‌ی تولید
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+خروجی در پوشه‌ی `dist/idicorp-console` قرار می‌گیرد.
 
-For end-to-end (e2e) testing, run:
+## ساختار پروژه
 
-```bash
-ng e2e
+```
+src/app/
+├── core/
+│   ├── guards/        محافظ مسیرهای نیازمند ورود
+│   ├── interceptors/  افزودن توکن و کوکی به درخواست‌های API
+│   ├── models/        تعریف نوع داده‌ها
+│   ├── services/      سرویس‌های HTTP و WebSocket
+│   └── utils/         تبدیل خطاها به پیام قابل نمایش
+└── features/
+    ├── login/         صفحه‌ی ورود
+    ├── tasks/         مدیریت تسک‌ها
+    ├── calculator/    ماشین‌حساب WebSocket
+    ├── echo/          پژواک متن WebSocket
+    └── stream/        پژواک استریمی
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## یادداشت‌ها و فرض‌ها
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- توکن در `sessionStorage` نگه داشته می‌شود و با بستن تب پاک می‌شود.
+- خروج از سرور API وجود ندارد، پس `logout` فقط وضعیت محلی را پاک می‌کند.
+- تسک‌ها طبق مستندات سرویس، یک ساعت بعد از آخرین تغییر منقضی می‌شوند.
+- اعتبارسنجی سمت کلاینت فقط برای تجربه‌ی بهتر است. سرور مرجع نهایی است.
+- اعداد فارسی در ماشین‌حساب به حالت استاندارد تبدیل می‌شوند.
+- فونت Vazirmatn از Google Fonts در `index.html` بارگذاری می‌شود. اگر به Google دسترسی نداری، صفحه با فونت پیش‌فرض نمایش داده می‌شود.
