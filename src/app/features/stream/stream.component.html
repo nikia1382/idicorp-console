@@ -7,7 +7,7 @@
     <a routerLink="/tasks" class="btn-ghost link">بازگشت</a>
   </header>
 
-  <form class="composer" (ngSubmit)="start()" novalidate>
+  <form class="composer" (submit)="$event.preventDefault(); start()" novalidate>
     <label for="stream-input">متن</label>
     <textarea
       id="stream-input"

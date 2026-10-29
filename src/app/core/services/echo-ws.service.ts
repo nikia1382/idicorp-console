@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
-import { environment } from '../../../../environment';
+import { environment } from '../../../environments/environment';
+import { openMockSocket } from '../mock/mock-socket';
 import { TOKEN_STORAGE_KEY } from './auth.service';
 
 export type EchoStatus = 'idle' | 'connecting' | 'ready' | 'closed';
@@ -26,7 +27,9 @@ export class EchoWsService implements OnDestroy {
     this.error.set(null);
     this.status.set('connecting');
 
-    const ws = new WebSocket(environment.echoWsUrl);
+    const ws = environment.mockBackend
+      ? openMockSocket(environment.echoWsUrl)
+      : new WebSocket(environment.echoWsUrl);
     this.socket = ws;
 
     ws.onmessage = (event: MessageEvent<string>) => {

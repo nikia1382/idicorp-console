@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
-import { environment } from '../../../../environment';
+import { environment } from '../../../environments/environment';
+import { openMockSocket } from '../mock/mock-socket';
 import { TOKEN_STORAGE_KEY } from './auth.service';
 
 export type CalcOperation = 'add' | 'subtract' | 'multiply' | 'divide';
@@ -33,7 +34,9 @@ export class CalculatorWsService implements OnDestroy {
     this.result.set(null);
     this.status.set('connecting');
 
-    const ws = new WebSocket(environment.calculatorWsUrl);
+    const ws = environment.mockBackend
+      ? openMockSocket(environment.calculatorWsUrl)
+      : new WebSocket(environment.calculatorWsUrl);
     this.socket = ws;
 
     // سرور مهلت یک‌ثانیه‌ای دارد، پس توکن را بلافاصله بعد از اتصال می‌فرستیم

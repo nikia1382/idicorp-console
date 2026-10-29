@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../environment';
+import { environment } from '../../../environments/environment';
+import { mockEchoStream } from '../mock/mock-stream';
 import { TOKEN_STORAGE_KEY } from './auth.service';
 
 /**
@@ -19,16 +20,18 @@ export class StreamService {
       throw new Error('نشست شما معتبر نیست. لطفاً دوباره وارد شوید.');
     }
 
-    const response = await fetch(`${environment.apiBaseUrl}/api/echo/stream`, {
-      method: 'POST',
-      credentials: 'include',
-      signal,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'text/plain; charset=utf-8',
-      },
-      body: text,
-    });
+    const response = environment.mockBackend
+      ? await mockEchoStream(text, token, signal)
+      : await fetch(`${environment.apiBaseUrl}/api/echo/stream`, {
+          method: 'POST',
+          credentials: 'include',
+          signal,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'text/plain; charset=utf-8',
+          },
+          body: text,
+        });
 
     if (response.status === 401) {
       throw new Error('احراز هویت انجام نشد. دوباره وارد شوید.');

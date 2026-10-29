@@ -20,7 +20,7 @@
     <button type="button" class="btn-ghost" (click)="reconnect()">اتصال مجدد</button>
   }
 
-  <form class="composer" (ngSubmit)="send()" novalidate>
+  <form class="composer" (submit)="$event.preventDefault(); send()" novalidate>
     <label for="echo-input" class="sr-only">متن پیام</label>
     <input
       id="echo-input"

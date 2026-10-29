@@ -295,6 +295,20 @@ h2 {
 }
 
 
+/* ───── پیوند سرویس‌ها ───── */
+.services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.services .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 /* ───── دکمه‌های اصلی و خطر ───── */
 .topbar-actions {
   display: flex;
