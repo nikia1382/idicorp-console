@@ -1,0 +1,2 @@
+/api/*  https://ts.idicorp.ir/api/:splat  200
+/*      /index.html                       200
