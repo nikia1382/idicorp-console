@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:pages": "ng build --base-href /idicorp-console/ && node scripts/prepare-pages.mjs",
+    "deploy": "npm run build:pages && node scripts/deploy-pages.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -17,6 +19,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@fontsource/vazirmatn": "^5.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

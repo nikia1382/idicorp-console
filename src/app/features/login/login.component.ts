@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { AppError } from '../../core/utils/http-error';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
   readonly loadingCaptcha = signal(false);
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
+  readonly demoMode = environment.mockBackend;
 
   private salt = '';
 
@@ -33,9 +35,10 @@ export class LoginComponent implements OnInit {
     this.loadCaptcha();
   }
 
-  loadCaptcha(): void {
+  /** بعد از ورود ناموفق، پیام خطا باید با کد جدید روی صفحه بماند. */
+  loadCaptcha(clearError = true): void {
     this.loadingCaptcha.set(true);
-    this.error.set(null);
+    if (clearError) this.error.set(null);
 
     this.auth.loadCaptcha().subscribe({
       next: (res) => {
@@ -68,9 +71,12 @@ export class LoginComponent implements OnInit {
       },
       error: (e: AppError) => {
         this.submitting.set(false);
-        this.error.set(e.message);
+        // در ورود، 401 یعنی اطلاعات اشتباه است، نه منقضی‌شدن نشست
+        this.error.set(
+          e.status === 401 ? 'نام کاربری، رمز عبور یا پاسخ کد امنیتی اشتباه است.' : e.message,
+        );
         this.form.controls.captcha_answer.reset('');
-        this.loadCaptcha();
+        this.loadCaptcha(false);
       },
     });
   }
