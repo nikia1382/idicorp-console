@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, effect, inject, signal, viewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
@@ -44,6 +44,7 @@ export class TasksComponent {
   readonly editingId = signal<number | null>(null);
   readonly saving = signal(false);
   readonly formError = signal<string | null>(null);
+  private readonly titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
 
   readonly form = this.fb.nonNullable.group({
     title: ['', [notBlank, Validators.maxLength(120)]],
@@ -59,6 +60,9 @@ export class TasksComponent {
   private readonly reload = new Subject<void>();
 
   constructor() {
+    // autofocus روی عنصری که بعداً با @if ساخته می‌شود کار نمی‌کند
+    effect(() => this.titleInput()?.nativeElement.focus());
+
     this.reload
       .pipe(
         tap(() => {
